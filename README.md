@@ -50,7 +50,7 @@ This configuration will redirect all requests on HTTP to HTTPS (except for Letâ€
 
 ## Run and Test Your Site
 
-From the `commento-docker-ssl` directory start the commento server by running all services defined in the docker-compose.yml file:
+From the `commento-docker-ssl` directory start the Commento server by running all services defined in the docker-compose.yml file:
 ```
 docker-compose up
 ```
@@ -61,7 +61,7 @@ docker-compose up -d
 
 ## Complete the setup
 
-To complete the setup process, navigate to `https://commento.mydomain.com` and follow [commento docs](https://docs.commento.io/installation/self-hosting/register-your-website/)
+To complete the setup process, navigate to `https://commento.mydomain.com` and follow [Commento docs](https://docs.commento.io/installation/self-hosting/register-your-website/)
 
 Then embed the following piece of HTML in your website wherever you want Commento to load. You may want to do this at the bottom of each post.
 
@@ -95,11 +95,11 @@ sudo crontab -e
 
 Add a line which will automatically invoke Certbot at 11PM every day. Replace commento.mydomain.com with your domain:
 ```
-0 23 * * *   certbot certonly -n --webroot -w /usr/share/nginx/html -d example.com --deploy-hook='docker exec ghost_nginx_1 nginx -s reload'
+0 23 * * *   certbot certonly -n --webroot -w /usr/share/nginx/html -d commento.mydomain.com --deploy-hook='docker exec ghost_nginx_1 nginx -s reload'
 ```
 Certbot will only renew your certificate if its expiration date is within 30 days. Running this every night ensures that if something goes wrong at first, the script will have a number of chances to try again before the expiration.
 
 You can test your new job with the --dry-run option:
 ```
-sudo bash -c "certbot certonly -n --webroot -w /usr/share/nginx/html -d example.com --deploy-hook='docker exec ghost_nginx_1 nginx -s reload'"
+sudo bash -c "certbot certonly -n --webroot -w /usr/share/nginx/html -d commento.mydomain.com --deploy-hook='docker exec ghost_nginx_1 nginx -s reload'"
 ```
