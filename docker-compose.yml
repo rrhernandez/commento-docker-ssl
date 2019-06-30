@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  server:
+    image: registry.gitlab.com/commento/commento
+    restart: always
+    environment:
+      COMMENTO_ORIGIN: https://commento.mydomain.com
+      COMMENTO_POSTGRES: postgres://postgres:your_database_root_password@db:5432/commento?sslmode=disable
+      COMMENTO_SMTP_HOST: smtp.mailgun.org
+      COMMENTO_SMTP_PORT: 587
+      COMMENTO_SMTP_USERNAME: postmaster@mydomain.com
+      COMMENTO_SMTP_PASSWORD: your_smtp_mailgun_password
+      COMMENTO_SMTP_FROM_ADDRESS: postmaster@mydomain.com
+    depends_on:
+      - db
+    networks:
+      - db_network
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: commento
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_database_root_password
+    networks:
+      - db_network
+    volumes:
+      - postgres_data_volume:/var/lib/postgresql/data
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - db_network
+    volumes:
+       - /etc/letsencrypt/:/etc/letsencrypt/
+       - /usr/share/nginx/html:/usr/share/nginx/html
+    
+networks:
+  db_network:
+
+volumes:
+  postgres_data_volume:
